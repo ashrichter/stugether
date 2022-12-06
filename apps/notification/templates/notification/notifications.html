@@ -1,0 +1,97 @@
+{% extends 'core/base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+    <div class="feed-header">
+        <div class="feed-header-container">
+            <div class="feed-search-bar">Notifications</div>
+        </div>
+    </div>
+
+    <div class="notifications-container">
+        {% if not notifications %}
+            <div class="notifications-container-item notifications-container-item-none" style="border: none !important;">
+                <div class="notifications-container-item-container">
+                    <div style="text-align: center; width: 100%">You have no notifications!</div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% for notification in notifications %}
+            <div class="notifications-container-item">
+                <div class="notifications-container-item-container">
+
+                    {# FRIEND REQUEST #}
+                    {% if notification.notification_type == 'friend' %}
+                        <a href="{% url 'notifications' %}?goto=userprofile&notification={{ notification.id }}">
+                            <div class="notifications-request-img">
+                                <img src="{{ notification.created_by.profile_image.url }}">
+                            </div>
+                            <a href="{% url 'notifications' %}?goto=userprofile&notification={{ notification.id }}">
+                                New friend request from
+                                {{ notification.created_by.first_name }} {{ notification.created_by.last_name }}
+                                <br>
+                                <span> @{{ notification.created_by.username }}</span>
+                                <div class="notifications-container-item-container-time">
+                                    {{ notification.created_at|naturaltime }}
+                                </div>
+                            </a>
+                        </a>
+
+                    {# MESSAGE #}
+                    {% elif notification.notification_type == 'message' %}
+                        <a href="{% url 'notifications' %}?goto=userprofile&notification={{ notification.id }}">
+                            You have new message from<span> @{{ notification.created_by.username }}</span>
+                            <div class="notifications-container-item-container-time">
+                                {{ notification.created_at|naturaltime }}
+                            </div>
+                        </a>
+
+                    {# REACT ON POST #}
+                    {% elif notification.notification_type == 'react' %}
+                        <a href="{% url 'notifications' %}?goto=userprofile&notification={{ notification.id }}">
+                            <div class="notifications-request-img">
+                                <img src="{{ notification.created_by.profile_image.url }}">
+                            </div>
+                            <a href="{% url 'notifications' %}?goto=userprofile&notification={{ notification.id }}">
+                                {{ notification.created_by.first_name }} has reacted to your post
+                                <br>
+                                <span> @{{ notification.created_by.username }}</span>
+                                <div class="notifications-container-item-container-time">
+                                    {{ notification.created_at|naturaltime }}
+                                </div>
+                            </a>
+                        </a>
+
+                    {# COMMENT ON POST #}
+                    {% elif notification.notification_type == 'comment' %}
+                        <a href="{% url 'notifications' %}?goto=userprofile&notification={{ notification.id }}">
+                            <div class="notifications-request-img">
+                                <img src="{{ notification.created_by.profile_image.url }}">
+                            </div>
+                            <a href="{% url 'notifications' %}?goto=userprofile&notification={{ notification.id }}">
+                                {{ notification.created_by.first_name }} has commented on your post
+                                <br>
+                                <span> @{{ notification.created_by.username }}</span>
+                                <div class="notifications-container-item-container-time">
+                                    {{ notification.created_at|naturaltime }}
+                                </div>
+                            </a>
+                        </a>
+
+                    {# MENTION YOU SOMEWHERE #}
+                    {% elif notification.notification_type == 'mention' %}
+                        <a href="{% url 'notifications' %}?goto=userprofile&notification={{ notification.id }}">
+                            New mention from<span> @{{ notification.created_by.username }}</span>
+                            <div class="notifications-container-item-container-time">
+                                {{ notification.created_at|naturaltime }}
+                            </div>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock content %}

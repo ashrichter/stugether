@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Stugether is an all in one app to bring students together">
+    <meta name="keywords" content="exeter, students, social, stugether">
+    <link href="{% static 'favicon/favicon.ico' %}" type="image/x-icon" rel="shortcut icon">
+     {% if title %}
+         <title>{{ title }}</title>
+    {% else %}
+        <title>Stugether</title>
+    {% endif %}
+    <link rel="stylesheet" href="{% static 'css/terms_privacy_cookies.css' %}">
+    {% block css %}
+    {% endblock %}
+</head>
+<body class="theme-dark">
+    <div class="main-outer-container">
+        <div class="terms-container">
+            <div class="terms-title-container">
+                <div class="terms-title">Terms and Conditions</div>
+                <div class="terms-title-bold">Terms and Conditions</div>
+                <div class="terms-title">Terms and Conditions</div>
+                <div class="terms-title">Terms and Conditions</div>
+            </div>
+
+            <div class="terms-info-container">
+                <div class="terms-info">
+                    <div>Last updated on the 16th of February 2021. <div class="terms-download-btn"><a target="_blank" href="{% static 'pdf/stugether_terms.pdf' %}">Download PDF</a></div></div>
+                    <br>
+                    <br>
+                    <hr>
+                    <h2>AGREEMENT TO TERMS</h2>
+                    These Terms of Use constitute a legally binding agreement between you and Stugether(“Company”,”We”,”us” or “our”) concerning your access to and use of the Stugether Web app. You agree that by accessing the Site, you have read, understood, and agreed to be bound by all of these Terms of Use. IF YOU DO NOT AGREE WITH ALL OF THESE TERMS OF USE, THEN YOU ARE EXPRESSELY PROHIBITED FROM USING THE SITE AND YOU MUST DISCONTINUE USE IMMEDIATELY.
+                    <br>
+                    <br>
+                    Supplemental terms and conditions or documents that may be posted on the Site from time to time are hereby expressly incorporated herein by reference. We reserve the right to change these terms at any time and will update you by changing the “Last updated” above.
+                    <br>
+                    <br>
+                    The information provided and published on the site is not intended for distribution or use to any person or entity in any jurisdiction where such distribution or use would be contrary to law or regulation or country. Accordingly, those persons who chose to access our website from anywhere other than the United Kingdom is subject to compliance with local laws.
+                    <br>
+                    <br>
+                    The Site is intended for users who are at least 18 years old. Persons under the age of 18 are not permitted to use or register for the Site.
+                    <br>
+                    <br>
+                    <h2>INTELLECTUAL PROPERTY RIGHTS</h2>
+                    Unless otherwise indicated, the Site is our property and all source code, databases, functionalities, software, website design are owned and controlled by us, and we are protected by the copyright and trademark laws of the United Kingdom.
+                    All content posted or published may be the intellectual property of an Academic or a Student, hence it is not intended for distribution or commercial use to non-users of the Site, if not specified otherwise.
+                    <br>
+                    <br>
+                    <hr>
+                    <h2>USER REPRESENTATIONS</h2>
+                    By using the site, you represent and warrant that: (1) all registration information you submit will be true, accurate, current and complete;(2) you will maintain the accuracy of such information and promptly update such registration information if necessary; (3) you have a legal capacity and you agree to comply by the Terms of Use; (4) you are not minor in the jurisdiction you reside; (5) you will not access the Site through automated or non-human means, whether a bit, script or otherwise; (6) you will not use the Site for illegal purposes; and (7) you use of the Site will not violate any laws.
+                    <br>
+                    <br>
+                    If you submit information that is untrue, inaccurate, not current or incomplete, we reserve the right to suspend or terminate your account and refuse any further use of our services.
+                    <br>
+                    <br>
+                    <hr>
+                    <h2>USER REGISTRATION</h2>
+                    When registering with the Site, you agree to keep your password confidential and will be responsible for all use of your account and password, We reserve the right to change your username if we determine, in our sole discretion, that such username is inappropriate, obscene or otherwise objectionable.
+                    <br>
+                    <br>
+                    <h2>PROHIBITED ACTIVITIES</h2>
+                    You may not access or use the Site for any purpose other than that for which we have made the Site Available. The Site may not be used in connection with any commercial endeavors except those that are specifically endorsed or approved by us or with any criminal or illegal activity.
+                    <br>
+                    <br>
+                    <h2>USER GENERATED CONTRIBUTIONS</h2>
+                    The Site may invite you to be part of conversations in chat comments, and may provide you with the opportunity to create, submit, display, transmit, publish or distribute content
+                    and materials to us or on the Site, mostly including text. Contribution may be viewable by other users of the Site and to us. Contributions are stored in a database and are only removed once deleted by the user. You agree that your contributions are:
+                    <br>
+                    <br>
+                    <li>Not false,inaccurate or misleading</li>
+                    <li>Not obscene,or inappropriate</li>
+                    <li>Not violating any laws</li>
+                    <li>Not intended to harass,ridicule,mock,intimidate or abuse anyone</li>
+                    <li>Not connected to offensive comments about race,religion,gender,sexual orientation</li>
+                    <li>Not intended to exploit individuals under the age of 18</li>
+                    <br>
+                    <br>
+                    You may be suspended if you do not abide by these.
+                    <br>
+                    <br>
+                    <hr>
+                    <h2>CONTRIBUTION LICENSE</h2>
+                    By posting your Contributions to any part of the Site or making Contributions accessible to the Site, you are accepting that the content is used in an unrestricted, unlimited, irrevocable, perpetual, non-exclusive way by us. We do not assert any ownership over your Contributions. You retain full ownership of them. We however do keep all your contributions in a database that is there indefinitely or until deleted.
+                    <br>
+                    <br>
+                    <h2>PRIVACY POLICY</h2>
+                    By using the Site, you agree to be bound to the privacy policy posted on the site. Please be advised the Site is hosted in the United Kingdom. You are transferring your data to the United Kingdom, and you agree or have your data transferred and processed in the United Kingdom.
+                    <br>
+                    <br>
+                    <h2>COPYRIGHT INFRINGEMENTS</h2>
+                    If you believe that any material available on or through the Site infringes upon any copyright you own or control, please immediately notify us using the contact information provided below.
+                    <br>
+                    <br>
+                    <h2>USER DATA</h2>
+                    We will maintain certain data that you transmit to the Site for the purpose of managing the Performance of the Site, as well as data relating to your use of the Site. Although we perform regular routine backups of data, you are solely responsible for all data that you transmit or that relates to any activity you have undertaken using the Site. You agree that we shall have no liability to you for any loss or corruption of any such data, and you hereby waive the right of action against us for arising from any such loss or corruption of such data.
+                    <br>
+                    <br>
+                    <hr>
+                    <h2>CONTACT US</h2>
+                    In order to resolve a complaint regarding the Site or receive further information please contact us at:
+                    <br>
+                    <br>
+                    Stugether
+                    <br>
+                    University of Exeter
+                    <br>
+                    Exeter, Devon EX4 4PY
+                    <br>
+                    United Kingdom
+                    <br>
+                    contact@stugether.co.uk
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+     <div class="terms-footer">
+        <div class="terms-footer-container">
+            <div>Stugether © 2021</div>
+            <div><a href="{% url 'home' %}">Stugether application</a></div>
+            <div><a href="{% url 'terms-and-conditions' %}">Terms and conditions</a></div>
+        </div>
+    </div>
+</body>

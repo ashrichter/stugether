@@ -1,0 +1,21 @@
+{% extends "core/base_profile.html" %}
+{% load static %}
+
+{% block profile_content %}
+
+    {% for interest in interest_list %}
+        {% if interest.user == user %}
+            <div class="following-topics-list-item">
+                <div class="following-topics-list-item-container">
+                    <span>{{ interest.topic.title }}</span>
+                    <a href="{% url 'topic-feed' interest.topic.id %}">View</a><br>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+
+{% endblock profile_content %}
+
+{% block script %}
+
+{% endblock %}

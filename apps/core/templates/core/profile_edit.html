@@ -1,0 +1,74 @@
+{% extends "core/base_profile.html" %}
+{% load static %}
+
+{% block profile_content %}
+
+<div class="edit_profile">
+    <div class="edit_profile-container">
+
+        <!-- USER REGISTER FORM -->
+        <form method="POST" id="edit_profile-form" enctype="multipart/form-data">
+          {% csrf_token %}
+
+            <div >
+                <div class="form-input-container">
+                    <div class="form-input-description">First name</div>
+                    {{ form.first_name }}
+                </div>
+                <div class="form-input-container">
+                    <div class="form-input-description">Last name</div>
+                    {{ form.last_name }}
+                </div>
+                <div class="form-input-container">
+                    <div class="form-input-description">Username</div>
+                    {{ form.username }}
+                </div>
+                <div class="form-input-container">
+                    <div class="form-input-description">Bio</div>
+                    {{ form.bio }}
+                </div>
+                <div class="form-input-container">
+                    <div class="form-input-description">Email</div>
+                    {{ form.email }}
+                </div>
+                <div class="form-input-container">
+                    <div class="form-input-description">Date of birth</div>
+                    {{ form.date_of_birth }}
+                </div>
+                <div class="form-input-container">
+                    <div class="form-input-description">Well being visibility</div>
+                    {{ form.well_being_visibility}}
+                </div>
+                <div class="form-input-container">
+                    <div class="form-input-description">Status</div>
+                    {{ form.status}}
+                </div>
+                <div class="form-input-container">
+                    <div class="form-input-description">Institution</div>
+                    {{ form.institution }}
+                </div>
+                <div class="form-input-container">
+                    <div class="form-input-description">Course</div>
+                    {{ form.field_of_study }}
+                </div>
+                <div class="form-input-container-image">
+                    {{ form.profile_image}}
+                </div>
+            </div>
+
+          <div style="overflow:auto;">
+            <div style="float:none;">
+                <button class="form-btn" type="button" id="nextBtn" onclick="submit()">Save</button>
+            </div>
+          </div>
+
+          <!-- ERROR MESSAGES -->
+          {{ form.errors }}
+        </form>
+    </div>
+</div>
+{% endblock profile_content %}
+
+{% block script %}
+    <script src="{% static 'js/editProfileForm.js' %}"></script>
+{% endblock %}

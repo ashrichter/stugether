@@ -1,0 +1,162 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- HEADER -->
+    <div class="post-edit-header search-header">
+        <a href="{% url 'home' %}" class="search-back-btn">
+            <i class="fas fa-arrow-left fa-lg"></i>
+        </a>
+        <form class="search-form" method="get" action="{% url 'search' %}">
+            <div class="field">
+                <div class="control search-form-input">
+                    <input type="text" class="input" name="query" value="{{ query }}" placeholder="Search here...">
+                </div>
+                <div class="control">
+                    <button class="button is-success search-form-btn">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- VARIOUS SEARCH TABS -->
+    <div class="search-page-container">
+        <div class="search-tabs">
+            <nav class="search-tabs-items">
+                <ul class="search-form-options">
+                    <li class="is-active btn-group active"><a href="#tab-one" class="btn-group-a active">All</a></li>
+                    <li class="btn-group"><a href="#tab-two" class="btn-group-a">People</a></li>
+                    <li class="btn-group"><a href="#tab-three" class="btn-group-a">Posts</a></li>
+                    <li class="btn-group"><a href="#tab-four" class="btn-group-a">Topics</a></li>
+                </ul>
+            </nav>
+
+            <!-- SEARCH FOR ALL -->
+            <section class="tab-content is-active" id="tab-one">
+                {% for user in users %}
+                    <div class="search-profile-container">
+                        {% if request.user.is_authenticated %}
+                            <a href="{% url 'profile_view' user.username %}">
+                        {% else %}
+                            <a href="{% url 'login' %}">
+                        {% endif %}
+                            <div class="notifications-request-img">
+                                <img src="{{ user.profile_image.url }}">
+                            </div>
+                            <div class="search-profile-container-name ">{{ user.first_name }} <span style="color: var(--logo-color)">@{{ user.username }}</span></div>
+                        </a>
+                    </div>
+                {% endfor %}
+
+                {% for post in posts %}
+                    <div class="search-post-container">
+                    <a href="{% url 'post-detail' post.id %}">
+                        <div class="search-post-title">{{ post.title }}</div>
+                        <div class="search-post-content">{{ post.content }}</div>
+                        {% if post.attachment %}
+                            <img class="search-post-img" src="{{ post.attachment.url }}">
+                        {% endif %}
+                    </a>
+                    </div>
+                {% endfor %}
+
+                {% for topic in topics %}
+                    <div class="search-post-container">
+                        <a href="{% url 'topic-feed' topic.id %}">
+                            <div class="search-post-title"># {{ topic.title }}</div>
+                            <div class="search-post-content">{{ topic.description }}</div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </section>
+
+            <!-- SEARCH FOR PEOPLE -->
+            <section class="tab-content" id="tab-two">
+               {% for user in users %}
+                    <div class="search-profile-container">
+                    {% if request.user.is_authenticated %}
+                        <a href="{% url 'profile_view' user.username %}">
+                    {% else %}
+                        <a href="{% url 'login' %}">
+                    {% endif %}
+                            <div class="notifications-request-img search-profile-img">
+                                <img src="{{ user.profile_image.url }}">
+                            </div>
+                            <div class="search-profile-container-name ">{{ user.first_name }} <span style="color: var(--logo-color)">@{{ user.username }}</span></div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </section>
+
+            <!-- SEARCH FOR POSTS -->
+            <section class="tab-content" id="tab-three">
+                {% for post in posts %}
+                    <div class="search-post-container">
+                        <a href="{% url 'post-detail' post.id %}">
+                            <div class="search-post-title">{{ post.title }}</div>
+                            <div class="search-post-content">{{ post.content }}</div>
+                            {% if post.attachment %}
+                                <img class="search-post-img" src="{{ post.attachment.url }}">
+                            {% endif %}
+                        </a>
+                    </div>
+                {% endfor %}
+            </section>
+
+            <!-- SEARCH FOR TOPICS -->
+            <section class="tab-content" id="tab-four">
+                {% for topic in topics %}
+                    <div class="search-post-container">
+                        <a href="{% url 'topic-feed' topic.id %}">
+                            <div class="search-post-title"># {{ topic.title }}</div>
+                            <div class="search-post-content">{{ topic.description }}</div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </section>
+        </div>
+
+    </div>
+
+    <script>
+        const tabs = document.querySelectorAll(".search-tabs .search-tabs-items li");
+        const sections = document.querySelectorAll(".search-tabs .tab-content");
+
+        tabs.forEach(tab => {
+          tab.addEventListener("click", e => {
+            e.preventDefault();
+            removeActiveTab();
+            addActiveTab(tab);
+          });
+        })
+
+        const removeActiveTab = () => {
+          tabs.forEach(tab => {
+            tab.classList.remove("is-active");
+          });
+          sections.forEach(section => {
+            section.classList.remove("is-active");
+          });
+        }
+
+        const addActiveTab = tab => {
+          tab.classList.add("is-active");
+          const href = tab.querySelector("a").getAttribute("href");
+          const matchingSection = document.querySelector(href);
+          matchingSection.classList.add("is-active");
+        }
+
+        {# Removing and adding css active class depending on button clicked #}
+        $(document).ready(function(){
+            $('.btn-group').on('click', function() {
+                $(this).addClass('active').siblings().removeClass('active');
+                $(this).children("a").addClass('active');
+                $(this).siblings().children("a").removeClass('active');
+            });
+        });
+    </script>
+{% endblock content %}
+
+{% block scripts %}
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends "core/base.html" %}
+
+{% load humanize %}
+
+{% block content %}
+    <div class="post-edit-header">
+        <a href="{{ request.META.HTTP_REFERER }}" class="base-profile-btn">
+            <i class="fas fa-arrow-left fa-lg"></i></a>
+        <div class="base-profile-header-title">Feed<br><span>@ {{ user }}</span></div>
+    </div>
+
+    <article class="feed-post feed-post-detailed">
+        <div class="feed-post-container">
+            <!-- This part shows the authors picture and info -->
+            <div class="feed-post-author-info">
+                <div class="feed-post-author-img">
+                    <img src="{{ post.author.profile_image.url }}">
+                </div>
+                <span><a class="mr-2" href="{% url 'profile_view' post.author %}">
+                    {{ post.author.first_name }}
+                    <span>@{{ post.author }}</span></a>
+                </span>
+            </div>
+
+            <!-- This the actual post stuff -->
+            <div class="feed-post-content">
+                <div class="feed-post-content-text">
+                    <a class="article-title">{{ post.title }}</a>
+                    <div class="feed-post-content-text-desc">{{ post.content }}</div>
+
+                    <div class="feed-post-content-tags">
+                        {% for tag in tags %}
+                            <a href="{% url 'topic-feed' tag.id %}"># {{ tag.title }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="feed-post-content-attachment">
+                    {% if post.attachment %}
+                        <img src="{{ post.attachment.url }}">
+                    {% endif %}
+                </div>
+                <div class="text-muted feed-post-content-date">{{ post.date_posted|naturaltime }}</div>
+
+                <!--comments-->
+                <br><br>
+
+                <div class="post-comments-container">
+                    <div class="post-comments-container-inner"  id="commentApp">
+                        {% if request.user.is_authenticated %}
+                            <form v-on:submit.prevent="submitComment()" class="post-comments-input-container">
+                                <input v-model="body" class="post-comment-input" type="text" placeholder="Add comment">
+                                <button class="post-comment-post-btn">Post</button>
+                            </form>
+                        {% endif %}
+                        <!-- New data being generated -->
+                        <div v-for="comment in comments" class="post-comments">
+                            <span style="color: var(--input-desc-text-color) !important;">[[ comment.user ]]&#58; </span>
+                            [[ comment.body ]]
+                            <span class="post-comment-date">[[ comment.created_at ]]</span>
+                        </div>
+                        <!-- Fetching data already in db -->
+                        {% for comment in post.comments.all %}
+                            <div class="post-comments">
+                                <span style="color: var(--input-desc-text-color) !important;">{{ comment.user }}:</span>
+                                {{ comment.body }}
+                                <span class="post-comment-date">{{ comment.created_at|naturaltime }}</span>
+                            </div>
+                        {% endfor %}
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+    {% if object.author == user %}
+        <div>
+            <a class="feed-post-btn" href="{% url 'post-update' object.id %}">Update</a>
+            <a class="feed-post-btn" href="{% url 'post-delete' object.id %}">Delete</a>
+        </div>
+    {% endif %}
+    <br><br>
+{% endblock content %}
+
+{% block script %}
+    <script>
+        new Vue({
+            el: '#commentApp',
+            delimiters: ['[[', ']]'],
+            data() {
+                return {
+                    comments: [],
+                    post: '{{ post }}',
+                    post_id: '{{ post.id }}',
+                    body: '',
+                    user: '{{ request.user.username }}',
+                    created_at: 'Now',
+                }
+            },
+            methods: {
+                submitComment() {
+                    console.log('submitComment');
+
+                    if (this.body.length > 0) {
+                        var comment = {
+                            'post':this.post,
+                            'post_id':this.post_id,
+                            'body':this.body,
+                            'user':this.user,
+                            'created_at':this.created_at
+                        };
+
+                        this.comments.unshift(comment);
+
+                        // send to back end
+                        fetch('/api/add_comment/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        credentials: 'same-origin',
+                        body: JSON.stringify(comment)
+                        })
+                        .then((response) => {
+                            console.log(response);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                    }
+                    this.body = '';
+                }
+            }
+        })
+    </script>
+{% endblock %}

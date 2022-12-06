@@ -1,0 +1,31 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="login">
+    <div class="login-container">
+        <div class="login-header">Login</div>
+
+        <!-- USER LOGIN FORM -->
+        <form class="login-form" method="POST" action="">
+          {% csrf_token %}
+          <div class="input-type">
+            <input type="text" name="username" placeholder="Username">
+          </div>
+          <div class="input-type">
+            <input type="password" name="password" placeholder="Password">
+          </div>
+          <div class="input-type">
+            <button type="submit" class="form-btn" name="login_user">Login</button>
+          </div>
+          <p>Not yet a member? <a class="form-link" href="{% url 'register' %}">Register</a></p>
+
+          <!-- ERROR MESSAGES -->
+          {% for message in messages %}
+              <p class="message-box">{{ message }}</p>
+          {% endfor %}
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

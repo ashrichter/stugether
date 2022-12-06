@@ -1,0 +1,207 @@
+{% extends "core/base_profile.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block profile_content %}
+
+    <div class="profile">
+        <div class="profile-container">
+            <div class="profile-section-one">
+                <div class="profile-section-one-pic">
+                    <img src="{{ user.profile_image.url }}">
+                </div>
+            </div>
+
+            <div class="profile-section-two">
+                <div class="profile-section-two-info">
+                    <div class="profile-section-two-fullname">{{ user.first_name }} {{ user.last_name }}
+                        {% if user.status == 2 %}
+                            <span>Away</span>
+                        {% elif user.status == 3 %}
+                            <span>In class</span>
+                        {% elif user.status == 4 %}
+                            <span>Free</span>
+                        {% elif user.status == 5 %}
+                            <span>Studying</span>
+                        {% else %}
+                            <span>None</span>
+                        {% endif %}
+                    </div>
+                    <div class="profile-section-two-username ">@{{ user }}</div>
+                    <div class="profile-section-two-bio ">{{ user.bio }}</div>
+
+                    <div class="profile-section-two-details">
+                        <div class="profile-section-two-details-item"><i
+                                class="fas fa-university"></i> {{ user.institution }}</div>
+                        <div class="profile-section-two-details-item"><i
+                                class="fas fa-graduation-cap"></i> {{ user.field_of_study }}</div>
+                        <div class="profile-section-two-details-item"><i class="fas fa-hashtag"></i>
+                            Contributions {{ user.contribution_counter }}</div>
+                        <div class="profile-section-two-details-item"><i class="fas fa-calendar-alt"></i>
+                            Joined {{ user.date_joined|date:'b Y' }}</div>
+                        {% if user.well_being_visibility == 'public' %}
+                            <div class="profile-section-two-details-item"><i class="fas fa-bed"></i>
+                                {% if weekly_averages.sleep == 'No data found' %}
+                                    No data found
+                                {% else %}
+                                    {{ weekly_averages.sleep.0 }}<span> hr</span>
+                                    {{ weekly_averages.sleep.1 }}<span> min</span>
+                                {% endif %}
+                            </div>
+                            <div class="profile-section-two-details-item"><i class="fas fa-shoe-prints"></i>
+                                {% if weekly_averages.sleep == 'No data found' %}
+                                    No data found
+                                {% else %}
+                                     {{ weekly_averages.steps }}<span> steps</span>
+                                {% endif %}
+                            </div>
+                            <div class="profile-section-two-details-item"><i class="fas fa-tint"></i>
+                                {% if weekly_averages.sleep == 'No data found' %}
+                                    No data found
+                                {% else %}
+                                     {{ weekly_averages.water }}<span> ml</span>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-section-one-buttons">
+                <div class="profile-section-one-buttons-btn">
+                    <button onclick="window.location.href='{% url 'friends' user.username %}'">Friends {{ no_of_friends }}</button>
+                </div>
+
+                <div class="profile-section-one-buttons-btn">
+                    <button onclick="window.location.href='{% url 'following-topics' user.username %}'">Topics {{ no_of_topics }}</button>
+                </div>
+
+                <div class="profile-section-one-buttons-btn">
+                    <form method="POST" id="friend-form" action={% url 'add_friend' %}>
+                        {% csrf_token %}
+                        {{ form }}
+                        {% if status == 1 %}
+                            <div class="profile-friend-btn" id="add">
+                            <button class="friend-button friend-button-red" type="submit">Add Friend</button>
+                        {% elif status == 2 %}
+                            <div class="profile-friend-btn" id="edit">
+                            <button class="friend-button friend-button-red" onclick="window.location.href='{% url 'edit-profile' %}'">Edit</button>
+                        {% elif status == 3 %}
+                            <div class="profile-friend-btn" id="sent">
+                            <button class="friend-button btn-options friend-button-red" type="reset">
+                                <span id="option1">Request Sent</span>
+                                <span id="option2">Cancel</span>
+                            </button>
+                        {% elif status == 4 %}
+                            <div class="profile-friend-btn" id="accept">
+                            <button class="friend-button friend-button-red" type="submit">
+                                Accept Request
+                            </button>
+                        {% elif status == 5 %}
+                            <div class="profile-friend-btn" id="delete">
+                            <button class="friend-button btn-options friend-button-red" type="reset">
+                                <span id="option1">Friended</span>
+                                <span id="option2">Delete</span>
+                            </button>
+                        {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+{#        <div class="profile-activity">#}
+{#            <div class="profile-activity-container">#}
+{#                Trophies and stuff goes here#}
+{#            </div>#}
+{#        </div>#}
+
+        <div class="profile-activity">
+            <span>Recent posts</span>
+        </div>
+
+        {% for post in user_posts %}
+            <article class="feed-post">
+                <div class="feed-post-container">
+                    <!-- This the actual post stuff -->
+                    <div class="feed-post-content">
+                        <div class="feed-post-content-text profile-feed">
+                            <a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a>
+                            <div class="feed-post-content-text-desc">{{ post.content }}</div>
+                        </div>
+                        <a class="feed-post-content" href="{% url 'post-detail' post.id %}">
+                            <div class="feed-post-content-attachment">
+                                {% if post.attachment %}
+                                    <img src="{{ post.attachment.url }}">
+                                {% endif %}
+                            </div>
+                        </a>
+
+                        <div class="post-vote-date-section">
+                            <div class="text-muted feed-post-content-date">{{ post.date_posted|naturaltime }}</div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+{% endblock profile_content %}
+
+{% block script %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var btn = $('.profile-friend-btn');
+            var frm = $('#friend-form');
+            frm.on('submit', (function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: frm.attr('method'),
+                    url: frm.attr('action'),
+                    data: frm.serialize(),
+                    success: function (data) {
+                        if (btn.attr('id') === "add") {
+                            btn.attr('id', 'sent');
+                            btn.html("<button class=\"friend-button btn-options friend-button-red\" type=\"reset\" id=\"delete-friend\">" +
+                                "<span id=\"option1\">Request Sent</span>" +
+                                "<span id=\"option2\">Cancel</span>" +
+                                "</button>");
+                        }
+                        if (btn.attr('id') === "accept") {
+                            btn.attr('id', 'delete');
+                            btn.html("<button class=\"friend-button btn-options friend-button-red\" type=\"reset\" id=\"delete-friend\">" +
+                                "<span id=\"option1\">Friended</span>" +
+                                "<span id=\"option2\">Delete</span>" +
+                                "</button>");
+                        }
+                    },
+                    error: function (data) {
+                        btn.html("<a> Error </a>");
+                        $('#test').html("error");
+                    }
+                });
+                return false;
+            }));
+            frm.on('reset', (function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: frm.attr('method'),
+                    url: "{% url 'delete_friend' %}",
+                    data: frm.serialize(),
+                    success: function (data) {
+                        $('input[name="accepted"]').val("False");
+                        var receiver = $('input[name="sender"]').val();
+                        $('input[name="sender"]').val($('input[name="receiver"]').val());
+                        $('input[name="receiver"]').val(receiver);
+                        btn.attr('id', 'add');
+                        btn.html("<button class=\"friend-button friend-button-red\" type=\"submit\">Add Friend</button>");
+                        $('#test').html(btn.attr('id'));
+                    },
+                    error: function (data) {
+                        btn.html("<a> Error </a>");
+                    }
+                });
+                return false;
+            }));
+        });
+    </script>
+{% endblock %}

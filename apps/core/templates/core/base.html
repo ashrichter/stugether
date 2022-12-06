@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Stugether is an all in one app to bring students together">
+    <meta name="keywords" content="exeter, students, social, stugether">
+    <meta property="og:image" content="{% static 'preview/preview.png' %}">
+    <link href="{% static 'favicon/favicon.ico' %}" type="image/x-icon" rel="shortcut icon">
+    {% if title %}
+         <title>{{ title }}</title>
+    {% else %}
+        <title>Stugether</title>
+    {% endif %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.min.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
+</head>
+<body class="theme-dark">
+    <div class="main-outer-container">
+     <!-- NAV BAR -->
+        <div class="nav-container">
+            <div class="nav-container-border">
+                <div>
+                    <img class="nav-container-logo" id="navLogo" src="{% static 'logo/logo.svg'  %}" alt="">
+                    <div class="navigation">
+                        <div class="burger-menu">
+                            <div class="line l1"></div>
+                            <div class="line l2"></div>
+                            <div class="line l3"></div>
+                        </div>
+                        <ul class="nav-links">
+                            <li><a class="link1" href="{% url 'home' %}" {% if active == 'home' %} style="color: var(--nav-active-color) !important;" {% endif %}>
+                                    <i class="fas fa-house-user"></i>  Home</a></li>
+                            <li><a class="link2" href="{% url 'search' %}" {% if active == 'search' %} style="color: var(--nav-active-color) !important;" {% endif %}>
+                                    <i class="fas fa-search"></i>  Search</a></li>
+                            {% if request.user.is_authenticated %}
+                                <li><a class="link2" href="{% url 'select-topics' %}" {% if active == 'topic-select' %} style="color: var(--nav-active-color) !important;" {% endif %}>
+                                    <i class="fas fa-hashtag"></i>  Explore</a></li>
+                                <li><a class="link2" href="{% url 'leaderboard' %}" {% if active == 'leaderboard' %} style="color: var(--nav-active-color) !important;" {% endif %}>
+                                    <i class="fas fa-trophy"></i>  Leaderboard</a></li>
+                                <li><a class="link2" href="{% url 'health' %}" {% if active == 'health' %} style="color: var(--nav-active-color) !important;" {% endif %}>
+                                    <i class="fas fa-heartbeat"></i>  Health</a></li>
+                                <li><a class="link3" href="{% url 'notifications' %}" {% if active == 'notifications' %} style="color: var(--nav-active-color) !important;" {% endif %}>
+                                    <i class="fas fa-bell notification-nav-icon">
+                                        {% if active != 'notifications' and no_of_notifications != 0 %}
+                                            <span>{{ no_of_notifications }}</span>
+                                        {% endif %}
+                                    </i>  Notifications</a></li>
+                                <li><a class="link4" href="{% url 'profile_view' request.user.username %}" {% if active == 'profile' %} style="color: var(--nav-active-color) !important;" {% endif %}>
+                                    <i class="fas fa-user"></i>  Profile</a></li>
+                                <li class="settings-btn"><a class="link2" href="{% url 'settings' %}" {% if active == 'settings' %} style="color: var(--nav-active-color) !important;" {% endif %}>
+                                    <i class="fas fa-cog"></i>  Settings</a>
+                                </li>
+                                <li><a class="link5" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i>  Logout</a></li>
+                                <li class="post-btn-li"><a class="link6 post-btn" href="{% url 'post-create' %}">Post</a></li>
+                            {% else %}
+                                <li><a class="link5" href="{% url 'login' %}" {% if active == 'login' %} style="color: var(--nav-active-color) !important;" {% endif %}>
+                                    <i class="fas fa-sign-in-alt"></i>  Login</a></li>
+                                <li><a class="link6 register-btn" href="{% url 'register' %}" {% if active == 'register' %} style="color: var(--nav-active-color) !important;" {% endif %}>
+                                    <i class="fas fa-user-plus"></i>  Register</a></li>
+                            {% endif %}
+
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="nav-container-profile-info">
+                    <div>{{ request.user.first_name }}</div>
+                    <div>
+                        {% if request.user.is_authenticated %}
+                            <a style="color: var(--input-desc-text-color); font-size: 80%;" href="{% url 'settings' %}">
+                                <i class="fas fa-cog"></i> {{ request.user }}
+                            </a>
+                        {% else %}
+                            <a style="color: var(--input-desc-text-color); font-size: 80%;" href="{% url 'login' %}">
+                                Not logged in
+                            </a>
+                        {% endif %}
+                    </div>
+                    <br>
+                    <div class="select-theme">
+                        <select class="select-theme-input" id="selectTheme">
+                            <option value="dark">Dark</option>
+                            <option value="light">Light</option>
+                            <option value="black">Black</option>
+                            <option value="desert">Desert</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-inner-container">
+            <!-- CHANGEABLE CONTENT -->
+            <div class="changeable-content main-sections">
+                {% block content %}
+                {% endblock %}
+            </div>
+            <div class="section-optional main-sections">
+                <!-- LEADERBOARD PREVIEW -->
+                <div class="section-optional-one">
+                    <div class="section-optional-title">Leaderboard</div>
+                    <div class="section-optional-leaderboard">
+                        {% for user in leaderboard %}
+                            <a href="{% url 'profile_view' user %}">
+                                <div class="section-optional-leaderboard-outer-container">
+                                    <div class="section-optional-leaderboard-container">
+                                        <div class="notifications-request-img leaderboard-pic">
+                                            <img src="{{ user.profile_image.url }}">
+                                        </div>
+                                        <div class="section-optional-leaderboard-users">
+                                            {{ user.first_name }}
+                                            <span style="color: var(--input-desc-text-color)">@{{ user }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                    <div class="section-optional-show-more">
+                        <a href="{% url 'leaderboard' %}">
+                            Show more
+                        </a>
+                    </div>
+                </div>
+                <!-- CHALLENGES PREVIEW -->
+                <div class="section-optional-two">
+                    <div class="section-optional-title">Popular topics</div>
+                    <div class="section-optional-topic-leaderboard">
+                        {% for topic in top_topics %}
+                            <a href="{% url 'topic-feed' topic.id %}">
+                                <div class="section-optional-leaderboard-outer-container">
+                                    <div class="section-optional-leaderboard-container">
+                                        <div style="color: var(--input-desc-text-color)" class="section-optional-leaderboard-users">
+                                            # {{ topic.title|stringformat:".40s" }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="section-optional-three">
+                    <a href="{% url 'terms-and-conditions' %}">Terms and Conditions</a> &bull;
+                    <a href="{% url 'privacy-policy' %}">Privacy Policy</a>
+                    <br>
+                    <a>© 2021 Stugether, Inc.</a>
+                </div>
+            </div>
+        </div>
+    {% block modal %}
+    {% endblock %}
+    </div>
+</body>
+<!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/colourScheme.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
+{% block script %}
+{% endblock %}
+</html>

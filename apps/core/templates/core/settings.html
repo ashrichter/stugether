@@ -1,0 +1,43 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="settings-page">
+    <div class="post-edit-header">
+        <a href="{% url 'home' %}" class="explore-back-btn">
+            <i class="fas fa-arrow-left fa-lg"></i>
+        </a>
+        <div class="explore-header" method="get" action="{% url 'search' %}">
+            <div class="field">
+                <div class="control search-form-input">
+                    <div style="font-size: 120%; color: var(--input-desc-text-color); font-weight: 700;">Settings</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="select-theme select-theme-settings">
+        <div class="settings-label">Select theme:</div>
+        <select class="select-theme-input" id="selectThemeInPage">
+            <option value="dark">Dark</option>
+            <option value="light">Light</option>
+            <option value="black">Black</option>
+            <option value="desert">Desert</option>
+        </select>
+    </div>
+    <hr>
+    <div class="select-theme select-theme-settings">
+        <div class="settings-label">Account:</div>
+        <a class="form-btn" href="mailto:contact@stugether.co.uk">Deactivate your account</a>
+    </div>
+</div>
+
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'js/colourScheme.js' %}"></script>
+{% endblock %}
+
+{% block scripts %}
+{#    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>#}
+{#    <script src="{% static 'js/colourScheme.js' %}"></script>#}
+{% endblock %}

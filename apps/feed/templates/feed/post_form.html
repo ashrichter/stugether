@@ -1,0 +1,23 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="post-edit-header">
+        <a href="{{ request.META.HTTP_REFERER  }}" class="base-profile-btn">
+            <i class="fas fa-arrow-left fa-lg"></i></a>
+        <div class="base-profile-header-title">Feed<br><span>@ {{ user }}</span></div>
+    </div>
+
+    <div class="post-form-edit">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">User Post</legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="feed-post-btn" type="submit">Next</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

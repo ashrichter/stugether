@@ -1,0 +1,85 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+    <!-- HEADER -->
+    <div class="feed-header">
+        <div class="feed-header-container">
+            <div class="feed-search-bar">Health Tracker</div>
+        </div>
+    </div>
+
+    <div class="health-page-container">
+        <div class="health-container health-sleep-container">
+            <div class="health-container-header">
+                <i class="fas fa-bed fa-2x"></i>
+                <span>Average Weekly Sleep</span>
+            </div>
+            <div class="health-detail-container">
+                <a>
+                    {% if weekly_averages.sleep == 'No data found' %}
+                        No data found
+                    {% else %}
+                        {{ weekly_averages.sleep.0 }}<span> hr</span>
+                        {{ weekly_averages.sleep.1 }}<span> min</span>
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+        <div class="health-container health-steps-container">
+            <div class="health-container-header">
+                <i class="fas fa-shoe-prints fa-2x"></i>
+                <span>Average Weekly Steps</span>
+            </div>
+            <div class="health-detail-container">
+                <a>
+                    {% if weekly_averages.sleep == 'No data found' %}
+                        No data found
+                    {% else %}
+                        {{ weekly_averages.steps }}<span> steps</span>
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+        <div class="health-container health-water-container">
+            <div class="health-container-header">
+                <i class="fas fa-tint fa-2x"></i>
+                <span>Average Weekly Water Intake</span>
+            </div>
+            <div class="health-detail-container">
+                <a>
+                    {% if weekly_averages.sleep == 'No data found' %}
+                        No data found
+                    {% else %}
+                        {{ weekly_averages.water }}<span> ml</span>
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+        <div class="health-container-form">
+            <form method="POST" id="" action="">
+                {% csrf_token %}
+                <div class="health-container-form-container-double">
+                    <div class="health-container-form-title">Daily Input</div>
+                    <br>
+                    <label for="appt">Time went to bed:</label>
+                    {{ form.sleep_start }}
+
+                    <label for="appt">Time out of bed:</label>
+                    {{ form.sleep_end }}
+
+                    <label for="appt">Steps:</label>
+                    {{ form.steps }}
+                    <label for="appt">Water:</label>
+                    {{ form.water }}
+                </div>
+                <button class="form-btn health-container-form-btn">Add</button>
+                <br>
+            </form>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block scripts %}
+{% endblock %}

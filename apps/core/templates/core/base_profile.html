@@ -1,0 +1,46 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="base-profile">
+    <div class="base-profile-container">
+        <div class="base-profile-header">
+            <!-- DIFFERENT BACK BTN URL DEPENDING ON USER -->
+            {% if request.user.username == user %}
+                <a href="{% url 'profile_view' request.user.username %}" class="base-profile-btn">
+                    <i class="fas fa-arrow-left fa-lg"></i></a>
+                <div class="base-profile-header-title">{{ title }}<br><span>@ {{ user }}</span></div>
+
+            {% elif active == 'profile' and request.user == user %}
+                <a href="{% url 'home' %}" class="base-profile-btn">
+                    <i class="fas fa-user fa-lg"></i></a>
+                <div class="base-profile-header-title">Profile<br><span>@ {{ user }}</span></div>
+
+            {% elif active == 'profile' %}
+                <a href="{{ request.META.HTTP_REFERER  }}" class="base-profile-btn">
+                    <i class="fas fa-arrow-left fa-lg"></i></a>
+                <div class="base-profile-header-title">Profile<br><span>@ {{ user }}</span></div>
+
+            {% else %}
+                <a href="{% url 'profile_view' user %}" class="base-profile-btn">
+                    <i class="fas fa-arrow-left fa-lg"></i></a>
+                <div class="base-profile-header-title">{{ title }}<br><span>@ {{ user }}</span></div>
+
+            {% endif %}
+        </div>
+
+        <!-- CHANGEABLE CONTENT -->
+        <div class="profile-changeable-content">
+            <section class="section">
+                {% block profile_content %}
+                {% endblock %}
+            </section>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}
+
+{% block script %}
+{% endblock %}

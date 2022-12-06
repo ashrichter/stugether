@@ -1,0 +1,34 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+    <!-- HEADER -->
+    <div class="feed-header">
+        <div class="feed-header-container">
+            <div class="feed-search-bar">Leaderboard</div>
+        </div>
+    </div>
+
+    <div class="leaderboard-page-container">
+        {% for user in ordered_list_of_users %}
+            <a href="{% url 'profile_view' user %}">
+                <div class="section-optional-leaderboard-outer-container">
+                    <div class="section-optional-leaderboard-container">
+                        <div class="notifications-request-img leaderboard-pic">
+                            <img src="{{ user.profile_image.url }}">
+                        </div>
+                        <div class="section-optional-leaderboard-users">
+                            {{ user.first_name }}
+                            <span style="color: var(--input-desc-text-color)">@{{ user }}</span>
+                        </div>
+                       <div style="margin-left: auto; color: var(--logo-color); margin-left: auto;">{{ user.contribution_counter }}</div>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+
+{% endblock content %}
+
+{% block scripts %}
+{% endblock %}

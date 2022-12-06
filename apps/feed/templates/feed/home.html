@@ -1,0 +1,156 @@
+{% extends 'core/base.html' %}
+
+{% load humanize %}
+{% load static %}
+
+{% block content %}
+    <div class="feed-header">
+        <div class="feed-header-container">
+            <div class="feed-search-bar">Home</div>
+        </div>
+    </div>
+    <div class="infinite-container container-home">
+        <!-- List of all posts -->
+        {% for post in posts %}
+            <article class="feed-post infinite-item">
+                <div class="feed-post-container">
+                    <!-- This part shows the authors picture and info -->
+                    <div class="feed-post-author-info">
+                        <div class="feed-post-author-img">
+                            <img src="{{ post.author.profile_image.url }}">
+                        </div>
+                        <span><a class="mr-2" href="{% url 'profile_view' post.author %}">
+                            {{ post.author.first_name }}
+                            <span>@{{ post.author }}</span></a>
+                        </span>
+                        <div class="feed-post-author-info-action">
+                            <button class="post-dropdown">
+                                <i class="fas fa-ellipsis-h"></i></button>
+                            <div id="m1" class="post-dropdown-content">
+                                {% if post.author == user %}
+                                    <a href="{% url 'post-update' post.id %}">Update</a>
+                                    <a href="{% url 'post-delete' post.id %}">Delete</a>
+                                {% else %}
+                                    <a href="{% url 'profile_view' post.author %}">View user</a>
+                                    <button id="report-post" class="post-report-btn" type="button" name="button" data-form-url="{% url 'post-report' post.pk %}">Report</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- This the actual post stuff -->
+                    <div class="feed-post-content">
+                        <div class="feed-post-content-text">
+                            <a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a>
+                            <div class="feed-post-content-text-desc">{{ post.content }}</div>
+                        </div>
+                        <a class="feed-post-content" href="{% url 'post-detail' post.id %}">
+                            <div class="feed-post-content-attachment">
+                                {% if post.attachment %}
+                                    <img src="{{ post.attachment.url }}">
+                                {% endif %}
+                            </div>
+                        </a>
+
+                        <div class="post-vote-date-section">
+                            <div class="post-vote-section">
+                                <a class="up-vote" href="{% url 'vote_up' post.id %}">
+                                    <i class="fas fa-thumbs-up fa-lg"></i>{{ post.up_votes }}</a>
+                                <a class="down-vote" href="{% url 'vote_down' post.id %}">
+                                    <i class="fas fa-thumbs-down fa-lg"></i>{{ post.down_votes }}</a>
+                            </div>
+                            <div class="text-muted feed-post-content-date">{{ post.date_posted|naturaltime }}</div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+
+    <div class="feed-more-btn">
+        {% if page_obj.has_next %}
+        <a class="infinite-more-link" href="?page={{ page_obj.next_page_number }}">More</a>
+        {% endif %}
+        </span>
+    </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+          <div class="modal-dialog" role="document">
+                <div class="modal-content"></div>
+          </div>
+    </div>
+    <div class="post-btn-mobile">
+        <a href="{% url 'post-create' %}"><i class="fas fa-plus fa-2x"></i></a>
+    </div>
+{% endblock content %}
+
+{% block script %}
+    {#  https://www.youtube.com/watch?v=bVswSaLUe0I <- tried to implement it but isnt working #}
+    <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'js/infinite.min.js' %}"></script>
+    <script>
+        var infinite = new Waypoint.Infinite({
+            element: $('.infinite-container')[0],
+
+            offset: 'bottom-in-view',
+
+            onBeforePageLoad: function () {
+                {#$('.loading').show();#}
+            },
+            onAfterPageLoad: function () {
+                {#$('.loading').hide();#}
+            }
+        });
+
+        $(document).ready(function () {
+
+            {# Function to handle drop down menu for posts #}
+            $(document).on('click', '.post-dropdown', function () {
+                $('.post-dropdown').not(this).next().removeClass('show');
+                $(this).next().toggleClass('show');
+            });
+            $(document).on('click', function (e) {
+                if (!$(e.target).closest('.post-dropdown').length)
+                    $('.post-dropdown').next().removeClass('show');
+            });
+
+			{# Functions to upvotes and downvotes #}
+            var up_voter = $('.up-vote');
+            var down_voter = $('.down-vote');
+            up_voter.on('click', function (e) {
+                e.preventDefault();
+                var i = $(this);
+                $.ajax({
+                    type: 'POST',
+                    url: i.attr('href'),
+                    data: {'csrfmiddlewaretoken':"{{ csrf_token }}"},
+                    success: function (data) {
+                        i.html("<i class=\"fas fa-thumbs-up fa-lg\"></i>" + data['up']);
+                    },
+                    error: function (data) {
+                        i.html("Error");
+                    }
+                });
+            });
+            down_voter.on('click', function (e) {
+                e.preventDefault();
+                var i = $(this);
+                $.ajax({
+                    type: 'POST',
+                    url: i.attr('href'),
+                    data: {'csrfmiddlewaretoken':"{{ csrf_token }}"},
+                    success: function (data) {
+                        i.html("<i class=\"fas fa-thumbs-down fa-lg\"></i>" + data['down']);
+                    },
+                    error: function (data) {
+                        i.html("Error");
+                    }
+                });
+            });
+
+            $("#report-post").modalForm({
+              formURL: $("#report-post").data("form-url")
+            });
+        });
+    </script>
+{% endblock script %}

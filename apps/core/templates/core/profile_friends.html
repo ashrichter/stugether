@@ -1,0 +1,23 @@
+{% extends "core/base_profile.html" %}
+{% load static %}
+
+{% block profile_content %}
+
+    <div class="profile-friends-list ">
+    {% for relation in  friends_list%}
+            <div class="profile-friends-item-container">
+                <div class="profile-friends-item ">
+                    {% if relation.sender == user %}
+                        {{ relation.receiver }} <span><a href="{% url 'profile_view' relation.receiver %}">View profile</a></span>
+                    {% elif relation.receiver == user %}
+                        {{ relation.sender }} <span><a href="{% url 'profile_view' relation.sender %}">View profile</a></span>
+                    {% endif %}
+                </div>
+            </div>
+    {% endfor  %}
+    </div>
+
+{% endblock profile_content %}
+
+{% block script %}
+{% endblock %}

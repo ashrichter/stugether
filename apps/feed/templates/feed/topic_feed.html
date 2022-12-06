@@ -1,0 +1,74 @@
+{% extends 'core/base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+    <div class="feed-header">
+        <div class="feed-header-container">
+            <div class="feed-search-bar"># {{ topic.title }}</div>
+        </div>
+    </div>
+    <div class="container-home">
+
+        <!-- List of all posts -->
+        {% for post in posts %}
+            <article class="feed-post">
+                <div class="feed-post-container">
+                    <!-- This part shows the authors picture and info -->
+                    <div class="feed-post-author-info">
+                        <div class="feed-post-author-img">
+                            <img src="{{ post.author.profile_image.url }}">
+                        </div>
+                        <span><a class="mr-2" href="{% url 'profile_view' post.author %}">
+                            {{ post.author.first_name }}
+                            <span>@{{ post.author }}</span></a>
+                        </span>
+                        <div class="feed-post-author-info-action">
+                            <button class="post-dropdown">
+                                <i class="fas fa-ellipsis-h"></i></button>
+                            <div id="m1" class="post-dropdown-content">
+                                {% if post.author == user %}
+                                    <a href="">Update</a>
+                                    <a href="">Delete</a>
+                                {% else %}
+                                    <a href="{% url 'profile_view' post.author %}">View user</a>
+                                    <button id="report-post" class="post-report-btn" type="button" name="button" data-form-url="{% url 'post-report' post.pk %}">Report</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- This the actual post stuff -->
+                    <div class="feed-post-content">
+                        <div class="feed-post-content-text">
+                            <a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a>
+                            <div class="feed-post-content-text-desc">{{ post.content }}</div>
+                        </div>
+                        <a class="feed-post-content" href="{% url 'post-detail' post.id %}">
+                            <div class="feed-post-content-attachment">
+                                {% if post.attachment %}
+                                    <img src="{{ post.attachment.url }}">
+                                {% endif %}
+                            </div>
+                        </a>
+
+                        <div class="post-vote-date-section">
+                            <div class="post-vote-section">
+                                <a class="up-vote" href="{% url 'vote_up' post.id %}">
+                                    <i class="fas fa-thumbs-up fa-lg"></i>{{ post.up_votes }}</a>
+                                <a class="down-vote" href="{% url 'vote_down' post.id %}">
+                                    <i class="fas fa-thumbs-down fa-lg"></i>{{ post.down_votes }}</a>
+                            </div>
+                            <div class="text-muted feed-post-content-date">{{ post.date_posted|naturaltime }}</div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+          <div class="modal-dialog" role="document">
+                <div class="modal-content"></div>
+          </div>
+    </div>
+{% endblock content %}

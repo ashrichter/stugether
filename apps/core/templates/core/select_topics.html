@@ -1,0 +1,60 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="select-topic">
+        <div class="post-edit-header">
+            <a href="{% url 'home' %}" class="explore-back-btn">
+                <i class="fas fa-arrow-left fa-lg"></i>
+            </a>
+            <div class="explore-header" method="get" action="{% url 'search' %}">
+                <div class="field">
+                    <div class="control search-form-input">
+                        <div style="font-size: 120%; color: var(--input-desc-text-color); font-weight: 700;">Pick topics to follow</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <form method="POST" id="topicForm" action="">
+              {% csrf_token %}
+                <div class="topic-selection">
+                {% for topic in object_list %}
+                    {% if topic in interest_list %}
+                        <input class="topicForm-following" type="checkbox" id="{{ topic.title }}" name="topic-following" value="{{ topic.id }}">
+                        <label class="topicForm-following" for="{{ topic.title }}"># {{ topic|stringformat:".40s" }}</label><br><br>
+                    {% else %}
+                        <input type="checkbox" id="{{ topic.title }}" name="topic-choices" value="{{ topic.id }}">
+                        <label for="{{ topic.title }}"># {{ topic|stringformat:".40s" }}</label><br><br>
+                    {% endif %}
+                {% endfor %}
+                </div>
+                <button type="submit" class="form-btn" name="submit_topics">Update</button>
+                <button class="form-btn form-btn-second" id="add-topic" type="button" name="button" data-toggle="modal">Add Topic
+                </button>
+            </form>
+
+            {% for message in messages %}
+                <div id="selectTopicMsg" class="select-topic-update-msg">Topic selection updated</div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}
+{% block modal %}
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+          <div class="modal-dialog" role="document">
+                <div class="modal-content"></div>
+          </div>
+    </div>
+{% endblock modal %}
+{% block script %}
+    <script>
+        $(document).ready(function () {
+            $("#add-topic").modalForm({
+              formURL: "{% url 'topic-add' %}"
+            });
+        });
+    </script>
+    <script src="{% static 'js/explorePage.js' %}"></script>
+{% endblock %}

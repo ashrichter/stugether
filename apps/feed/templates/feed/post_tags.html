@@ -1,0 +1,108 @@
+{% extends "core/base.html" %}
+{% load humanize %}
+{% block content %}
+    <div class="post-edit-header">
+        <a href="{{ request.META.HTTP_REFERER }}" class="base-profile-btn">
+            <i class="fas fa-arrow-left fa-lg"></i></a>
+        <div class="base-profile-header-title">Feed<br><span>@ {{ user }}</span></div>
+    </div>
+
+    <article class="feed-post feed-post-detailed">
+        <div class="feed-post-container">
+            <!-- This part shows the authors picture and info -->
+            <div class="feed-post-author-info">
+                <div class="feed-post-author-img">
+                    <img src="{{ post.author.profile_image.url }}">
+                </div>
+                <span><a class="mr-2" href="{% url 'profile_view' post.author %}">
+                    {{ post.author.first_name }}
+                    <span>@{{ post.author }}</span></a>
+                </span>
+            </div>
+
+            <!-- This the actual post stuff -->
+            <div class="feed-post-content">
+                <div class="feed-post-content-text">
+                    <a class="article-title">{{ post.title }}</a>
+                    <div class="feed-post-content-text-desc">{{ post.content }}</div>
+                </div>
+                <div class="feed-post-content-attachment">
+                    {% if post.attachment %}
+                        <img src="{{ post.attachment.url }}">
+                    {% endif %}
+                </div>
+                <div class="text-muted feed-post-content-date">{{ post.date_posted|naturaltime }}</div>
+            </div>
+            <div class="feed-post-add-tags">
+                <div class="feed-post-add-tags-title">
+                    Attach topics to your post:
+                </div>
+                <div class="feed-post-tag-list" id="feed-post-tag-list">
+                    {% for tag in tags %}
+                        <div class="delete-tag" onclick="deleteTag(this)" id="{% url "post-tag-delete" pk=tag.id %}">
+                            # {{ tag.topic.title }}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="feed-post-tag-choice">
+                    <form method="POST" id="tag-form" action={% url 'post-tags' post.pk%}>
+                        {% csrf_token %}
+                        {{ form }}
+                        <p id="error"></p>
+                        <button class="form-btn" id="add-tag" type="submit">Add Tag</button>
+                    </form>
+                </div>
+                <div class="back-finish-btn-div">
+                    <a class="feed-post-btn" href="{% url 'post-update' post.id %}">Back</a>
+                    <a class="feed-post-btn" href="{% url 'post-detail' post.id %}">Finish</a>
+                </div>
+            </div>
+        </div>
+    </article>
+    <br><br>
+{% endblock content %}
+{% block script %}
+    <script>
+    $(document).ready(function (e) {
+            var tag_list = $('#feed-post-tag-list');
+            var add_tag = $('#add-tag');
+            var frm = $('#tag-form');
+            var error = $('#error');
+            frm.on('submit', (function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: frm.attr('method'),
+                    url: frm.attr('action'),
+                    data: frm.serialize(),
+                    success: function (json) {
+                        var html = "";
+                        var ids = json['ids'];
+                        var topics = json['topics'];
+                        for (i = 0; i < ids.length; i ++) {
+                            var url = 'id="{% url "post-tag-delete" pk=12345 %}">'.replace(/12345/, ids[i].toString());
+                            html += '<div class="delete-tag" onclick="deleteTag(this)" ' + url + topics[i] + ' </div>';
+                        }
+                        tag_list.html(html);
+                    },
+                    error: function (data) {
+                        error = "Error: " + data['error'];
+                    }
+                });
+            }));
+        });
+        function deleteTag(i) {
+                {#var i = $(this);#}
+                $.ajax({
+                    type: "POST",
+                    url: i.id,
+                    data: {'csrfmiddlewaretoken':"{{ csrf_token }}"},
+                    success: function (json) {
+                        i.remove();
+                    },
+                    error: function (data) {
+                        i.html("Error: Please refresh and try again.");
+                    }
+                });
+            }
+    </script>
+{% endblock script %}
